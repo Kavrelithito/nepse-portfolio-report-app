@@ -1,0 +1,51 @@
+
+
+name: Run NEPSE Portfolio Summary
+
+on:
+  schedule:
+    - cron: '50 10 * * 0-4'  # 10:00 UTC = 12:00 Norway (UTC+2)
+  workflow_dispatch:  # Allow manual trigger
+
+permissions:
+  contents: write  # Allow GitHub Actions to push changes
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install MEGA downloader
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y megatools
+      - name: Download Excel from MEGA into data/
+        env:
+          MEGA_XLSM_URL: ${{ secrets.MEGA_XLSM_URL }}
+        run: |
+          mkdir -p data
+          megadl "$MEGA_XLSM_URL" --path "data/NEPSE_Kavrelibis_2025.xlsm"
+          ls -lah data
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas matplotlib openpyxl requests
+      - name: Run script 
+        env:
+          PYTHONPATH: ${{ github.workspace }}//src
+        run: |
+          python src/nepse_portfoli/app/make_report_pdf.py
+          ls -lah output
+      - name: Upload PDF artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nepse_portfolio_report
+          path: output/nepse_portfolio_report_latest.pdf

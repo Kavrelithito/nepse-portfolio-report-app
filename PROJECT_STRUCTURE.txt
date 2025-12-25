@@ -1,0 +1,25 @@
+.
+├── data
+│   └── NEPSE_Kavrelibis_2025.xlsm
+├── docs
+│   ├── DECISIONS.md
+│   ├── README.md
+│   ├── STATUS.md
+│   └── TODO.md
+├── .gitignore
+├── output
+│   └── nepse_portfolio_report_latest.pdf
+├── PROJECT_STRUCTURE.txt
+├── src
+│   └── nepse_portfoli
+│       ├── app
+│       │   └── make_report_pdf.py
+│       ├── config
+│       ├── core
+│       │   └── summary_pi.py
+│       └── io
+│           ├── git_hub_price_download.py
+│           └── portfolio_io.py
+└── update_structure.sh
+
+10 directories, 13 files
