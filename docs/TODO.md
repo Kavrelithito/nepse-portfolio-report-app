@@ -10,7 +10,7 @@
 ## High Priority
 - [ ] Add sector mapping CSV
 - [ ] Build sector pie chart
-- [ ] Export summary to Excel
+- 
 
 ## Nice to Have
 - [ ] Historical returns

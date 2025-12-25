@@ -2,20 +2,20 @@
 
 Automated **NEPSE portfolio analysis and PDF report generation** using Python and GitHub Actions.
 
-This project reads a **private macro-enabled Excel portfolio (`.xlsm`) stored on MEGA**, combines it with daily NEPSE market prices, and produces a **reproducible PDF portfolio report**.
+This project reads a **Trade log excel file**, **Price file**, and produces a **reproducible PDF portfolio report**.
 
-👉 **Private financial data is never committed to GitHub.**
+👉 **This is test portfoli summary**
 
 ---
 
 ## ✨ What This Project Does
 
-- 📥 Downloads portfolio Excel (`.xlsm`) securely from **MEGA**
-- 📊 Downloads daily NEPSE prices from GitHub
+- 📥 read Trade log file that user supplied
+- 📊 Read stock price donwloaded by user from the Nepse
 - 🧮 Calculates portfolio, sector, and profit summaries
 - 📈 Generates charts and tables
 - 🧾 Exports a single **PDF report**
-- 🤖 Runs automatically via **GitHub Actions**
+- 🤖 Runs automatically via **Streamlit APP.py**
 - ▶️ Can also be run **locally**
 
 ---
@@ -24,7 +24,8 @@ This project reads a **private macro-enabled Excel portfolio (`.xlsm`) stored on
 
 ```text
 ├── data
-│   └── NEPSE_Kavrelibis_2025.xlsm      # Portfolio Excel (downloaded from MEGA)
+│   └── NEPSE_Kavrelibis_2026.xlsm  
+    # Portfolio Excel (downloaded from MEGA)
 ├── docs
 │   ├── DECISIONS.md                   # Architecture & design decisions
 │   ├── README.md                     # This documentation
@@ -46,13 +47,13 @@ This project reads a **private macro-enabled Excel portfolio (`.xlsm`) stored on
 └── .gitignore
 
 🔁 Data Flow
-MEGA (Excel .xlsm)
+Use input Excel .xlsm
         ↓
-GitHub Actions (megadl)
+GitHub Actions ?
         ↓
-data/NEPSE_Kavrelibis_2025.xlsm
+data/NEPSE_Kavrelibis_2026.xlsm
         ↓
-Daily NEPSE price CSVs (GitHub)
+data/Daily NEPSE price CSVs 
         ↓
 Portfolio parsing & calculations
         ↓
@@ -60,40 +61,13 @@ Charts and tables
         ↓
 PDF report → output/
 
-📥 Excel Input Source (MEGA)
+
 
 ⚠️ Important
 
-The portfolio Excel file is NOT stored in this repository.
+APP dont store any input or output files/results
 
-It is downloaded dynamically from MEGA every time the workflow runs.
 
-Excel Details
-
-Storage: MEGA.nz
-
-File name: NEPSE_Kavrelibis_2025.xlsm
-
-Format: .xlsm (macros are ignored by Python)
-
-Download tool: megatools (megadl)
-
-Reason for using MEGA:
-
-Protect private financial data
-
-Avoid committing large binary files
-
-Allow Excel updates without changing code
-
-🔐 Required GitHub Secret
-
-The following secret must be configured in the repository:
-
-Secret name	Description
-MEGA_XLSM_URL	MEGA download link for the Excel portfolio file
-
-If this secret is missing or invalid, the workflow will fail.
 
 📍 Expected Excel Location
 
@@ -130,15 +104,9 @@ Install Python dependencies
 
 Run PDF generation script
 
-Upload PDF as workflow artifact
 
-Excel Download Step (Excerpt)
-- name: Download Excel from MEGA into data/
-  env:
-    MEGA_XLSM_URL: ${{ secrets.MEGA_XLSM_URL }}
-  run: |
-    mkdir -p data
-    megadl "$MEGA_XLSM_URL" --path "data/NEPSE_Kavrelibis_2025.xlsm"
+
+
 
 ▶️ Running Locally
 1️⃣ Create Virtual Environment
@@ -197,13 +165,7 @@ Minimal dependencies
 
 See docs/TODO.md, including:
 
-Streamlit dashboard
 
-Multi-portfolio support
-
-Scheduled daily execution
-
-Upload PDF to OneDrive / SharePoint
 
 Email or Teams notifications
 

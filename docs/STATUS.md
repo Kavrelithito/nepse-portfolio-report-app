@@ -2,7 +2,7 @@
 
 ## Working
 - ✔ Excel portfolio reader
-- ✔ Price CSV loader
+- ✔ Price CSV reader
 - ✔ Symbol-wise summary table
 
 ## Partially Working
