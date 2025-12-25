@@ -19,4 +19,7 @@ __pycache__/
 # --- Excel temp / backup ---
 ~$*.xls*
 
-data/
+data/*
+!data/example_trading_log.xlsx
+!data/example_prices.csv
+
