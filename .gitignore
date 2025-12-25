@@ -20,6 +20,6 @@ __pycache__/
 ~$*.xls*
 
 data/*
-!data/example_trading_log.xlsx
+!data/example_trading_log.xlsm
 !data/example_prices.csv
 
