@@ -1,6 +1,8 @@
 # --- Generated outputs ---
 output/
 
+!output/*.pdf
+
 # --- Python ---
 __pycache__/
 *.pyc
