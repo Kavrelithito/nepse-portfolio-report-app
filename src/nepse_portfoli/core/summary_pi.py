@@ -117,10 +117,6 @@ def realized_profit_by_symbol(df: pd.DataFrame) -> pd.DataFrame:
     )
 
 
-import pandas as pd
-import matplotlib.pyplot as plt
-import pandas as pd
-import matplotlib.pyplot as plt
 
 
 def plot_sector_pie(sector_raw: pd.DataFrame) -> plt.Figure:

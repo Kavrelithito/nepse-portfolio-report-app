@@ -1,15 +1,22 @@
 .
+├── app.py
 ├── data
-│   └── NEPSE_Kavrelibis_2025.xlsm
+│   ├── NEPSE_Kavrelibis_2026.xlsm
+│   └── Today's Price - 2025-12-25.csv
 ├── docs
 │   ├── DECISIONS.md
 │   ├── README.md
 │   ├── STATUS.md
 │   └── TODO.md
+├── .github
+│   └── workflows
+│       └── run_nepse.yml
 ├── .gitignore
 ├── output
 │   └── nepse_portfolio_report_latest.pdf
 ├── PROJECT_STRUCTURE.txt
+├── requirements.txt
+├── run_file.sh
 ├── src
 │   └── nepse_portfoli
 │       ├── app
@@ -18,8 +25,8 @@
 │       ├── core
 │       │   └── summary_pi.py
 │       └── io
-│           ├── git_hub_price_download.py
-│           └── portfolio_io.py
+│           ├── portfolio_io.py
+│           └── read_price_file.py
 └── update_structure.sh
 
-10 directories, 13 files
+12 directories, 18 files
