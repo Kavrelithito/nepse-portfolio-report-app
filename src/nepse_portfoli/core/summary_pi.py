@@ -15,11 +15,11 @@ def build_symbol_summary_open(df: pd.DataFrame, price_df: pd.DataFrame) -> pd.Da
     open_df = df[df["position"].astype(str).str.strip().str.lower() == "o"].copy()
     open_df = open_df.merge(price_df, on="Symbol", how="left")
 
-    open_df["Investment_NPR"] = open_df["Buy price"] * open_df["Final holding after sell"]
-    open_df["Market_Value_NPR"] = open_df["Current share Price"] * open_df["Final holding after sell"]
+    open_df["Investment_NPR"] = open_df["Buy price"] * open_df["Total holding"]
+    open_df["Market_Value_NPR"] = open_df["Current share Price"] * open_df["Total holding"]
 
     def _agg_symbol(g: pd.DataFrame) -> pd.Series:
-        total_kitta = g["Final holding after sell"].sum()
+        total_kitta = g["Total holding"].sum()
         investment = g["Investment_NPR"].sum()
         market_value = g["Market_Value_NPR"].sum()
 
@@ -69,13 +69,13 @@ def build_sector_summary_raw(df_port: pd.DataFrame, price_df: pd.DataFrame) -> p
     open_df = df[df["position"].astype(str).str.strip().str.lower() == "o"].copy()
     open_df = open_df.merge(price_df, on="Symbol", how="left")
 
-    open_df["Investment_NPR"] = open_df["Buy price"] * open_df["Final holding after sell"]
-    open_df["Market_Value_NPR"] = open_df["Current share Price"] * open_df["Final holding after sell"]
+    open_df["Investment_NPR"] = open_df["Buy price"] * open_df["Total holding"]
+    open_df["Market_Value_NPR"] = open_df["Current share Price"] * open_df["Total holding"]
 
     sector = (
         open_df.groupby("Sector", dropna=False, as_index=False)
         .agg(
-            Total_Kitta=("Final holding after sell", "sum"),
+            Total_Kitta=("Total holding", "sum"),
             Investment_NPR=("Investment_NPR", "sum"),
             Market_Value_NPR=("Market_Value_NPR", "sum"),
         )
