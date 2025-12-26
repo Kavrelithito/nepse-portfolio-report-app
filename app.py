@@ -24,10 +24,13 @@ DEFAULT_PRICE_URL = (
 
 DEFAULT_TRADING_URL = (
     "https://raw.githubusercontent.com/Kavrelithito/"
-    "nepse-portfolio-report-app/main/data/example_trading_log.xlsm"
+    "nepse-portfolio-report-app/main/data/trading_journal_template.xls"
 )
 
-DEFAULT_TRADING_NAME = "example_trading_log.xlsm"
+DEFAULT_TRADING_NAME = "trading_journal_template.xls"
+
+
+DEFAULT_TRADING_NAME = "trading_journal_template.xls"
 DEFAULT_PRICE_NAME = "Today's Price - 2025-12-25.csv"
 
 
