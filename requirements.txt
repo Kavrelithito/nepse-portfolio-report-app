@@ -3,3 +3,4 @@ matplotlib
 requests
 openpyxl
 streamlit
+xlrd>=2.0.1
