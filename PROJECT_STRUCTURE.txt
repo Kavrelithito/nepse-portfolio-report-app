@@ -1,0 +1,33 @@
+.
+├── app.py
+├── data
+│   ├── Today's Price - 2025-12-25.csv
+│   └── trading_journal_template.xls
+├── docs
+│   ├── DECISIONS.md
+│   ├── README.md
+│   ├── STATUS.md
+│   └── TODO.md
+├── .github
+│   └── workflows
+│       └── run_nepse.yml
+├── .gitignore
+├── output
+│   ├── nepse_portfolio_report_latest.pdf
+│   └── portfolio_report.pdf
+├── PROJECT_STRUCTURE.txt
+├── requirements.txt
+├── run_file.sh
+├── src
+│   └── nepse_portfoli
+│       ├── app
+│       │   └── make_report_pdf.py
+│       ├── config
+│       ├── core
+│       │   └── summary_pi.py
+│       └── io
+│           ├── portfolio_io.py
+│           └── read_price_file.py
+└── update_structure.sh
+
+12 directories, 19 files
