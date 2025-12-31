@@ -21,32 +21,11 @@ def _detect_price_column(price_df: pd.DataFrame) -> str:
     raise ValueError(
         f"Could not find price column in NEPSE file. Found: {list(price_df.columns)}"
     )
-def load_sector_map(trading_file) -> pd.DataFrame:
-    sector_df = pd.read_excel(
-        trading_file,
-        sheet_name="Sector info",
-        usecols="E:F",     # Symbol + sector code
-        skiprows=2,        # start at row 3 (NABIL)
-        header=None,       # no header in file
-        names=["Symbol", "Sector"]
+def load_sector_map(sector_info_file) -> pd.DataFrame:
+    sector_df = pd.read_csv(
+        sector_info_file,sep="\t"
+        
     )
-
-    # clean
-    sector_df["Symbol"] = (
-        sector_df["Symbol"]
-        .astype(str)
-        .str.strip()
-        .str.upper()
-    )
-
-    sector_df["Sector"] = (
-        sector_df["Sector"]
-        .astype(str)
-        .str.strip()
-    )
-
-    # drop fully empty rows
-    sector_df = sector_df.dropna(subset=["Symbol"])
 
     return sector_df
 

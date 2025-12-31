@@ -32,22 +32,58 @@ from nepse_portfoli.io.read_price_file import load_price_file
 from nepse_portfoli.io.trading_loader import load_trading_sheet
 
 
+# def load_sector_map(sector_info_file) -> pd.DataFrame:
+#     sector_df = pd.read_csv(
+#         sector_info_file,
+        
+#     )
 
+#     return sector_df
+
+
+# sector_df = load_sector_map(sector_info_file)
+# print(sector_df)
 
 OUT_DIR = Path("output")
 OUT_DIR.mkdir(exist_ok=True)
 
 PAGE_SIZE = (16.5, 11.7)
+# def get_price_date(price_file):
+#     try:
+#         # handle both string path + file-like objects
+#         if isinstance(price_file, str):
+#             path = Path(price_file)
+#             suffix = path.suffix.lower()
+#             file_for_read = price_file
+#             filename_text = price_file
+#         else:
+#             suffix = Path(price_file.name).suffix.lower()
+#             file_for_read = price_file
+#             filename_text = price_file.name
 
+#         # read file
+#         if suffix == ".csv":
+#             df = pd.read_csv(file_for_read, engine="python", on_bad_lines="skip")
+#         else:
+#             df = pd.read_excel(file_for_read)
 
+#         # reset pointer (important!)
+#         if hasattr(price_file, "seek"):
+#             price_file.seek(0)
 
-def extract_date_from_filename(filename: str) -> str:
-    """
-    Extract YYYY-MM-DD from something like:
-    "Today's Price - 2025-12-25.csv"
-    """
-    m = re.search(r"\d{4}-\d{2}-\d{2}", filename)
-    return m.group(0) if m else "Unknown"
+#         # try 2nd row, 2nd column
+#         value = str(df.iloc[1, 1]).strip()
+
+#         if value and value.lower() not in ["nan", "none", ""]:
+#             return value
+
+#     except Exception as e:
+#         # temporary debug
+#         st.write("DEBUG get_price_date error:", e)
+
+#     # fallback extract from filename
+#     m = re.search(r"\d{4}-\d{2}-\d{2}", filename_text)
+#     return m.group(0) if m else "Unknownnp"
 
 
 
@@ -175,7 +211,6 @@ def make_pdf_report(trading_file, price_file, sheet_name, price_col):
     print("DEBUG — type(trading_file):", type(trading_file))
     print("DEBUG — type(price_file):", type(price_file))
 
-   
     # reset uploaded files (important)
     if hasattr(trading_file, "seek"):
         trading_file.seek(0)
@@ -189,39 +224,34 @@ def make_pdf_report(trading_file, price_file, sheet_name, price_col):
     if price_file is None:
         raise ValueError("No price file uploaded")
 
-    # 1️⃣ Load trading journal (portfolio)
+    # 1️⃣ trading log
     df_port = load_trading_sheet(trading_file, sheet_name)
 
-    # 2️⃣ Load price file (RAW)
+    # 2️⃣ price file
     price_raw = load_price_file(price_file)
 
+    # filename for fallback
     filename = Path(str(price_file)).name
-    used_date = extract_date_from_filename(filename)
+
+    # -----------------------------
+    # Extract price date for header
+    # -----------------------------
+    try:
+        raw = price_raw.iloc[1, 1]
+        used_date = pd.to_datetime(raw, errors="coerce").strftime("%Y-%m-%d")
+    except Exception:
+        m = re.search(r"\d{4}-\d{2}-\d{2}", filename)
+        used_date = m.group(0) if m else "Unknown"
+
+    # 3️⃣ sector map
+    sector_info_file = r"C:\Users\npt_e\Documents\MEGA\Nepse_Portfoli\nepse-portfolio-report-app\data\Sector_info.csv"
+    sector_df = load_sector_map(sector_info_file)
+    print(sector_df)
 
 
-    # 3️⃣ Load sector map
-    sector_df = load_sector_map(trading_file)
-
-
-        # 4️⃣ Build OPEN POSITIONS dataframe
-    #   open_positions_df = build_open_positions(df_port)
-
-    # 5️⃣ Build summaries
-    print("PDF — calling build_symbol_summary_open()")
-    symbol_summary_open = build_symbol_summary_open(
-        df_port,
-        price_raw,
-        sector_df,
-        )
-
-    print("PDF — calling build_sector_summary_raw()")
-    sector_raw = build_sector_summary_raw(
-        df_port,
-        price_raw,
-        sector_df
-    )
-
-    print("PDF — after summaries:", list(sector_raw.columns))
+    # 4️⃣ summaries
+    symbol_summary_open = build_symbol_summary_open(df_port, price_raw, sector_df)
+    sector_raw = build_sector_summary_raw(df_port, price_raw, sector_df)
 
     total_inv = float(sector_raw["Investment_NPR"].sum())
     total_mv = float(sector_raw["Market_Value_NPR"].sum())
@@ -229,7 +259,6 @@ def make_pdf_report(trading_file, price_file, sheet_name, price_col):
     rp = realized_profit_by_symbol(df_port)
     total_realized = float(rp["Realized_Profit_NPR"].sum()) if not rp.empty else 0.0
 
-    # rename for PDF formatting
     symbol_summary_pdf = symbol_summary_open.rename(columns={
         "sn": "SN",
         "Current share Price": "Current Price",
@@ -248,39 +277,18 @@ def make_pdf_report(trading_file, price_file, sheet_name, price_col):
 
         ax = fig.add_axes([0.02, 0.08, 0.98, 0.82])
         ax.axis("off")
-
         add_table(ax, symbol_summary_pdf)
 
         pdf.savefig(fig, bbox_inches="tight")
         plt.close(fig)
 
-    with PdfPages(out_pdf) as pdf:
-        # -------- PAGE 1 (KEEP SAME) --------
-        fig = plt.figure(figsize=PAGE_SIZE)
-
-        draw_header(fig, used_date, total_inv, total_mv, total_realized)
-
-        ax = fig.add_axes([0.02, 0.08, 0.98, 0.82])
-        ax.axis("off")
-
-        add_table(ax, symbol_summary_pdf)
-
-        pdf.savefig(fig, bbox_inches="tight")
-        plt.close(fig)
-
-        print("PDF DEBUG — sector_raw columns:", list(sector_raw.columns))
-
-        # -------- PAGE 2 (PIE CHART) --------
+        # ---------- PAGE 2 ----------
         pie_input = sector_raw.copy()
 
         if "Sector" not in pie_input.columns and "Label" in pie_input.columns:
-            # rebuild Sector from Label text
             pie_input["Sector"] = pie_input["Label"].str.replace(r"\s*\(.*\)", "", regex=True)
 
         pie_fig = plot_sector_pie(pie_input)
-
-
-        # Make sure size fits A4 landscape
         pie_fig.set_size_inches(PAGE_SIZE)
 
         pdf.savefig(pie_fig, bbox_inches="tight")
@@ -292,6 +300,7 @@ if __name__ == "__main__":
     # ---- CHANGE THESE TO REAL FILE PATHS ----
     trading_file = r"C:\Users\npt_e\Documents\MEGA\Nepse_portfoli\nepse-portfolio-report-app\data\trading_journal_template.xls"
     price_file   = r"C:\Users\npt_e\Documents\MEGA\Nepse_portfoli\nepse-portfolio-report-app\data\Today's Price - 2025-12-25.csv"
+    #sector_info_file  = r"C:\Users\npt_e\Documents\MEGA\Nepse_portfoli\nepse-portfolio-report-app\data\Sector_info.csv"
 
     sheet_name = "Keshav"
     price_col  = "Last Updated Price"
@@ -302,6 +311,7 @@ if __name__ == "__main__":
             price_file=price_file,
             sheet_name=sheet_name,
             price_col=price_col,
+            
         )
 
         print("\nPDF created successfully:\n", pdf_path)
