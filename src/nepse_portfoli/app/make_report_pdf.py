@@ -244,9 +244,11 @@ def make_pdf_report(trading_file, price_file, sheet_name, price_col):
         used_date = m.group(0) if m else "Unknown"
 
     # 3️⃣ sector map
-    sector_info_file = r"C:\Users\npt_e\Documents\MEGA\Nepse_Portfoli\nepse-portfolio-report-app\data\Sector_info.csv"
+    ROOT = Path(__file__).resolve().parents[2]
+
+    sector_info_file = ROOT / "data" / "Sector_info.csv"
+
     sector_df = load_sector_map(sector_info_file)
-    print(sector_df)
 
 
     # 4️⃣ summaries
