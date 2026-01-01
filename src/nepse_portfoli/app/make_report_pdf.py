@@ -244,7 +244,7 @@ def make_pdf_report(trading_file, price_file, sheet_name, price_col):
         used_date = m.group(0) if m else "Unknown"
 
     # 3️⃣ sector map
-    ROOT = Path(__file__).resolve().parents[2]
+    ROOT = Path(__file__).resolve().parents[3]
 
     sector_info_file = ROOT / "data" / "Sector_info.csv"
 
